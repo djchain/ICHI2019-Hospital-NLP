@@ -2,14 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="baf6ac5c-f3be-47d2-9e5f-5e328392bfd2" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/main_190130.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/Hospital-nlp-731.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Hospital-nlp-731.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data_preprocessing.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_preprocessing.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main_0415.py" beforeDir="false" afterPath="$PROJECT_DIR$/main_0415.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main_0419.py" beforeDir="false" afterPath="$PROJECT_DIR$/main_0419.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main_1017.py" beforeDir="false" afterPath="$PROJECT_DIR$/main_1017.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main_190130.py" beforeDir="false" afterPath="$PROJECT_DIR$/main_190130.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -48,24 +41,24 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="py" value="2084" />
+          <entry key="py" value="2153" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Python" value="2084" />
+          <entry key="Python" value="2153" />
         </counts>
       </usages-collector>
     </session>
   </component>
   <component name="FileEditorManager">
-    <splitter split-orientation="horizontal" split-proportion="0.4828199">
+    <splitter split-orientation="horizontal" split-proportion="0.36208734">
       <split-first>
         <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
           <file pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/main_1017.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="541">
+                <state relative-caret-position="-620">
                   <caret line="40" lean-forward="true" selection-start-line="40" selection-end-line="40" />
                   <folding>
                     <element signature="e#24#61#0" expanded="true" />
@@ -120,8 +113,16 @@
           <file pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/main_190130.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="252">
-                  <caret line="14" column="9" lean-forward="true" selection-start-line="14" selection-start-column="9" selection-end-line="14" selection-end-column="9" />
+                <state relative-caret-position="2023">
+                  <caret line="134" column="15" selection-start-line="134" selection-start-column="15" selection-end-line="134" selection-end-column="15" />
+                  <folding>
+                    <element signature="e#24#61#0" expanded="true" />
+                    <element signature="e#725#733#1" />
+                    <element signature="e#1450#1786#0" />
+                    <element signature="e#1814#1843#0" />
+                    <element signature="e#1873#1901#0" />
+                    <element signature="e#1946#2030#0" />
+                  </folding>
                 </state>
               </provider>
             </entry>
@@ -399,7 +400,7 @@
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.2699115" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.2699115" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.27165353" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -514,7 +515,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/main_1017.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="541">
+        <state relative-caret-position="-620">
           <caret line="40" lean-forward="true" selection-start-line="40" selection-end-line="40" />
           <folding>
             <element signature="e#24#61#0" expanded="true" />
@@ -524,8 +525,16 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/main_190130.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="252">
-          <caret line="14" column="9" lean-forward="true" selection-start-line="14" selection-start-column="9" selection-end-line="14" selection-end-column="9" />
+        <state relative-caret-position="2023">
+          <caret line="134" column="15" selection-start-line="134" selection-start-column="15" selection-end-line="134" selection-end-column="15" />
+          <folding>
+            <element signature="e#24#61#0" expanded="true" />
+            <element signature="e#725#733#1" />
+            <element signature="e#1450#1786#0" />
+            <element signature="e#1814#1843#0" />
+            <element signature="e#1873#1901#0" />
+            <element signature="e#1946#2030#0" />
+          </folding>
         </state>
       </provider>
     </entry>

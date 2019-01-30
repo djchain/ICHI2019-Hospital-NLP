@@ -17,13 +17,11 @@ import scipy.io as scio
 from sklearn.metrics import confusion_matrix
 import random
 import pyexcel as pe
-
 '''
 @Ruiyu
 2019.01.30
 ToDo: Text branch only, hi mode RNN -> Attach result and lo mode RNN
 '''
-
 ## TRAING PARAMS
 batch_size = 32
 epoch_count = 10
@@ -121,8 +119,7 @@ if __name__ == "__main__":
                                             batch_size = batch_size,
                                             verbose = 0)
         acc_collection.append(acc)
-        print('>>>Done Training Epoch: ' + str(i) + ' out of ' + str(epoch_count))
-        print('>Accuaracy = ', acc, ' | Loss = ', loss)
+        print('>Accuaracy = {:.2f} | Loss = {:.2f}'.format(acc, loss))
         #weights = text_model.get_weights()
         cirno.write_epoch_acc(i, acc) # record in analyze file
         if acc > acc_max:
@@ -135,5 +132,5 @@ if __name__ == "__main__":
     #train_text_inter = inter_text.predict(train_text, batch_size=batch_size)
     #test_text_inter = inter_text.predict(test_text, batch_size=batch_size)
 
-    print('>>>Training All Done')
+    print('\n\n>>>Training All Done')
     print('>Max Text Acc =', acc_max)
