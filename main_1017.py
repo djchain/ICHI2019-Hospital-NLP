@@ -24,15 +24,15 @@ import pyexcel as pe
 Trying to load data each epoch, with label averagely distributed, especially "NULL"/"NA" label.
 """
 batch_size = 32
-epo = [100, 100, 100]#audio,text,fusion
+epo = [2, 100, 100]#audio,text,fusion
 flag = 0
 numclass = 7
 
 result_t,result_a=[],[]
 
 ##### loading training testing data here
-gakki=data(path=r'E:/Yue/Entire Data/CNMC/hospital_data')
-saving_path = r'E:/Yue/Entire Data/CNMC/'
+gakki=data(path=r'/Volumes/Detchue Base II/731/CNMC/hospital_data')
+saving_path = r'/Volumes/Detchue Base II/731/CNMC'
 output_data = ['/result/train_audio.mat', '/result/train_text.mat', '/result/test_audio.mat', '/result/test_text.mat']
 
 gakki.unclear_lbl.append('Monitor Vital Signs')
@@ -42,6 +42,8 @@ gakki.label_mode='lower_10'
 test_label,test_text,test_audio_left,test_audio_right = gakki.get_tester(average=True)
 train_label,train_text,train_audio_left,train_audio_right = gakki.get_trainer()
 numclass=len(gakki.trainer_lbl_statistics)-len(gakki.unclear_lbl)+4
+
+numclass = 11 #specialized for lower10, should delete if not this mode
 
 
 # define the operations
@@ -77,31 +79,6 @@ def to_one_digit_label(onehot_labels):
         index = np.argmax(label)
         res.append(index)
     return res
-'''
-def ramdon_select_from(lbl,txt,al,ar,each_count=60):
-    #就是从train/test label 里面随机选一些出来
-    dic={}
-    lbl_,txt_,al_,ar_=[],[],[],[]
-    #for i,(l,t,L,R) in enumerate(zip(lbl,txt,al,ar)):
-    for i,label in enumerate(lbl):
-        l=tuple(label)
-        if l in dic:
-            dic[l].append(i)
-        else:
-            dic[l]=[i]
-    for l in dic.keys():
-        indices=dic[l]
-        random.shuffle(indices)
-        for index in indices[:min(len(indices),each_count)]:
-            lbl_.append(lbl[index])
-            txt_.append(txt[index])
-            al_.append(al[index])
-            ar_.append(ar[index])
-    return lbl_,txt_,al_,ar_
-'''
-
-
-
 
 ###### Audio branch 2
 
@@ -240,6 +217,7 @@ if __name__ == "__main__":
 
     print(cm)
     '''
+    '''
     train_label, train_text, train_audio_left, train_audio_right = gakki.get_trainer(average=True)
     inter_text.load_weights(saving_path + 'inter_text_output_weights.h5')
     text_model.load_weights(saving_path + 'entire_text_output_weights.h5')
@@ -250,7 +228,6 @@ if __name__ == "__main__":
     train_audio_inter = inter_audio.predict([train_audio_left, train_audio_right], batch_size=batch_size)
     test_audio_inter = inter_audio.predict([test_audio_left, test_audio_right], batch_size=batch_size)
     fusion_model.load_weights(saving_path + 'entire_fusion_output_weights.h5')
-    '''
     '''
     # text modeling
     text_acc = 0
@@ -287,7 +264,7 @@ if __name__ == "__main__":
     train_text_inter = inter_text.predict(train_text, batch_size=batch_size)
     test_text_inter = inter_text.predict(test_text, batch_size=batch_size)
 
-
+    '''
     # Audio modeling
     audio_acc = 0
     for i in range(epo[0]):
@@ -348,7 +325,7 @@ if __name__ == "__main__":
         if acc_f >= final_acc:
             final_acc = acc_f
             fusion_model.save_weights(saving_path + 'entire_fusion_output_weights.h5')
-
+    '''
 
     print('>>>Training done.')
     print('>Text Acc:' ,result_t)

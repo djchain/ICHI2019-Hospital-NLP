@@ -25,9 +25,12 @@ numclass = 11
 result_t,result_a=[],[]
 
 ##### loading training testing data here
-gakki=data(path=r'E:/Yue/Entire Data/CNMC/hospital_data')
-saving_path = r'E:/Yue/Entire Data/CNMC/'
+#gakki=data(path=r'E:/Yue/Entire Data/CNMC/hospital_data')
+#saving_path = r'E:/Yue/Entire Data/CNMC/'
 output_data = ['/result/train_audio.mat', '/result/train_text.mat', '/result/test_audio.mat', '/result/test_text.mat']
+
+gakki=data(path=r'/Volumes/NaturalLanguageProcessing/Entire Data/CNMC/hospital_data')
+saving_path = r'/Volumes/NaturalLanguageProcessing/Entire Data/CNMC/'
 
 gakki.unclear_lbl.append('Monitor Vital Signs')
 gakki.auto_process(merge_unclear=True)

@@ -22,8 +22,8 @@ numclass = 10
 result_t,result_a=[],[]
 
 ##### loading training testing data here
-gakki=data(path=r'E:\Yue\Entire Data\CNMC\hospital_data')
-saving_path = r'E:\Yue\Entire Data\CNMC'
+gakki=data(path=r'/Volumes/Detchue Base II/731/CNMC/hospital_data')
+saving_path = r'/Volumes/Detchue Base II/731/CNMC'
 gakki.auto_process()
 test_label,test_text,test_audio_left,test_audio_right=gakki.get_tester(average=True)
 train_label,train_text,train_audio_left,train_audio_right=gakki.get_trainer(average=True)
@@ -172,7 +172,7 @@ if __name__ == "__main__":
                        batch_size=batch_size,
                        epochs=1,
                        verbose=1,
-                       callbacks=[TensorBoard(log_dir=saving_path+'\\hospital_data\\analyze\\log_dir\\')])
+                       callbacks=[TensorBoard(log_dir=saving_path+'/hospital_data/analyze/log_dir/')])
 
         loss_t, acc_t = text_model.evaluate(test_text,
                                             test_label,
@@ -191,7 +191,7 @@ if __name__ == "__main__":
     train_text_inter = inter_text.predict(train_text, batch_size=batch_size)
     test_text_inter = inter_text.predict(test_text, batch_size=batch_size)
 
-
+    '''
     # Audio modeling
     audio_acc = 0
     for i in range(epo[0]):
@@ -243,11 +243,12 @@ if __name__ == "__main__":
         if acc_f >= final_acc:
             final_acc = acc_f
             fusion_model.save_weights(saving_path + 'entire_fusion_output_weights.h5')
-
+    '''
 
     # print result
     print('>>>Training done.')
-    print('>Text Acc:' ,result_t)
-    print('>Audio Acc:' ,result_a)
-    print('text acc: ', text_acc, ' audio acc: ', audio_acc, ' final acc: ', final_acc)
+    print('>Text Acc records:' ,result_t)
+    print('text acc max:', text_acc)
+    # print('>Audio Acc:' ,result_a)
+    # print('text acc: ', text_acc, ' audio acc: ', audio_acc, ' final acc: ', final_acc)
 

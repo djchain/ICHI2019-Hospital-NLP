@@ -976,7 +976,7 @@ class data():
 
 def main():
 
-    path = r'E:/ScarletmailSync/Hospital/hospital_data_arranged'
+    path = r'/Volumes/NaturalLanguageProcessing/Entire Data/CNMC/hospital_data'
     #test_data.load()
     test_data=data(path=path)
     test_data.unclear_lbl.append('Monitor Vital Signs')
