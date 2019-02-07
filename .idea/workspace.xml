@@ -3,8 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="baf6ac5c-f3be-47d2-9e5f-5e328392bfd2" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data_preprocessing.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_preprocessing.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main_190130.py" beforeDir="false" afterPath="$PROJECT_DIR$/main_190130.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main_190201.py" beforeDir="false" afterPath="$PROJECT_DIR$/main_hierarchial.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -25,86 +25,55 @@
     <session id="-1354198200">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="5" />
+          <entry key="project.closed" value="7" />
           <entry key="project.open.time.4" value="1" />
-          <entry key="project.open.time.6" value="2" />
+          <entry key="project.open.time.6" value="5" />
           <entry key="project.open.time.7" value="2" />
-          <entry key="project.opened" value="5" />
+          <entry key="project.opened" value="8" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="py" value="13" />
+          <entry key="py" value="15" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="Python" value="13" />
+          <entry key="Python" value="15" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="py" value="2888" />
+          <entry key="dummy" value="15" />
+          <entry key="py" value="3140" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Python" value="2888" />
+          <entry key="PLAIN_TEXT" value="15" />
+          <entry key="Python" value="3140" />
         </counts>
       </usages-collector>
     </session>
   </component>
   <component name="FileEditorManager">
-    <splitter split-orientation="horizontal" split-proportion="0.4946752">
+    <splitter split-orientation="horizontal" split-proportion="0.4483493">
       <split-first>
         <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-          <file pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/main_1017.py">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="254">
-                  <caret line="90" column="10" selection-start-line="90" selection-start-column="10" selection-end-line="90" selection-end-column="10" />
-                  <folding>
-                    <element signature="e#24#61#0" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/main_190130.py">
-              <provider selected="true" editor-type-id="text-editor" />
-            </entry>
-          </file>
-          <file pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/main_0419.py">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="198">
-                  <caret line="27" column="58" selection-start-line="27" selection-start-column="58" selection-end-line="27" selection-end-column="58" />
-                  <folding>
-                    <element signature="e#24#61#0" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/main_0415.py">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="198">
-                  <caret line="24" column="33" selection-start-line="24" selection-start-column="33" selection-end-line="24" selection-end-column="33" />
-                  <folding>
-                    <element signature="e#24#61#0" expanded="true" />
-                    <element signature="e#6959#9343#1" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
           <file pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/main_190130.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="1018">
+                  <caret line="136" column="56" lean-forward="true" selection-start-line="136" selection-start-column="56" selection-end-line="136" selection-end-column="56" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/data_preprocessing.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="583">
-                  <caret line="543" column="66" selection-start-line="543" selection-start-column="66" selection-end-line="543" selection-end-column="66" />
+                <state relative-caret-position="291">
+                  <caret line="501" column="32" lean-forward="true" selection-start-line="501" selection-start-column="32" selection-end-line="501" selection-end-column="32" />
                 </state>
               </provider>
             </entry>
@@ -116,17 +85,17 @@
           <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/main_190130.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="-191">
-                  <caret line="80" column="40" lean-forward="true" selection-start-line="80" selection-start-column="40" selection-end-line="80" selection-end-column="40" />
+                <state relative-caret-position="312">
+                  <caret line="81" column="42" selection-start-line="81" selection-start-column="42" selection-end-line="81" selection-end-column="42" />
                 </state>
               </provider>
             </entry>
           </file>
           <file pinned="false" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/main_190201.py">
+            <entry file="file://$PROJECT_DIR$/main_hierarchial.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="907">
-                  <caret line="183" column="18" selection-start-line="183" selection-start-column="18" selection-end-line="183" selection-end-column="18" />
+                <state relative-caret-position="-452">
+                  <caret line="61" column="46" selection-start-line="61" selection-start-column="46" selection-end-line="61" selection-end-column="46" />
                 </state>
               </provider>
             </entry>
@@ -178,7 +147,7 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="file://$PROJECT_DIR$/main_190201.py" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/main_hierarchial.py" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/main_0415.py" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/main_190130.py" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/main_1017.py" root0="SKIP_INSPECTION" />
@@ -193,8 +162,8 @@
         <option value="$PROJECT_DIR$/main_0419.py" />
         <option value="$PROJECT_DIR$/main_0415.py" />
         <option value="$PROJECT_DIR$/main_1017.py" />
-        <option value="$PROJECT_DIR$/main_190130.py" />
         <option value="$PROJECT_DIR$/data_preprocessing.py" />
+        <option value="$PROJECT_DIR$/main_190130.py" />
         <option value="$PROJECT_DIR$/main_190201.py" />
       </list>
     </option>
@@ -205,7 +174,7 @@
     <detection-done>true</detection-done>
     <sorting>DEFINITION_ORDER</sorting>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6" fullScreen="true">
+  <component name="ProjectFrameBounds" fullScreen="true">
     <option name="width" value="1920" />
     <option name="height" value="1200" />
   </component>
@@ -216,20 +185,7 @@
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
-    <panes>
-      <pane id="ProjectPane">
-        <subPane>
-          <expand>
-            <path>
-              <item name="ICHI2019-Hospital-NLP" type="b2602c69:ProjectViewProjectNode" />
-              <item name="ICHI2019-Hospital-NLP" type="462c0819:PsiDirectoryNode" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
-      <pane id="Scope" />
-    </panes>
+    <panes />
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
@@ -400,7 +356,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="0" width="1920" height="1200" extended-state="6" />
+    <frame x="0" y="0" width="1920" height="1200" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" weight="0.10330138" />
@@ -495,7 +451,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/main_1017.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="254">
+        <state relative-caret-position="1296">
           <caret line="90" column="10" selection-start-line="90" selection-start-column="10" selection-end-line="90" selection-end-column="10" />
           <folding>
             <element signature="e#24#61#0" expanded="true" />
@@ -524,20 +480,38 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/main_190130.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/main_190201.py">
+    <entry file="file://$PROJECT_DIR$/data_preprocessing.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="907">
-          <caret line="183" column="18" selection-start-line="183" selection-start-column="18" selection-end-line="183" selection-end-column="18" />
+        <state relative-caret-position="291">
+          <caret line="501" column="32" lean-forward="true" selection-start-line="501" selection-start-column="32" selection-end-line="501" selection-end-column="32" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/data_preprocessing.py">
+    <entry file="file://$USER_HOME$/anaconda3/envs/deeplearning/lib/python3.6/site-packages/keras/engine/input_layer.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="583">
-          <caret line="543" column="66" selection-start-line="543" selection-start-column="66" selection-end-line="543" selection-end-column="66" />
+        <state relative-caret-position="-267">
+          <caret line="113" column="4" selection-start-line="113" selection-start-column="4" selection-end-line="113" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/anaconda3/envs/deeplearning/lib/python3.6/site-packages/keras/layers/core.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2390">
+          <caret line="56" column="8" selection-start-line="56" selection-start-column="8" selection-end-line="56" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/main_hierarchial.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-452">
+          <caret line="61" column="46" selection-start-line="61" selection-start-column="46" selection-end-line="61" selection-end-column="46" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/main_190130.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1018">
+          <caret line="136" column="56" lean-forward="true" selection-start-line="136" selection-start-column="56" selection-end-line="136" selection-end-column="56" />
         </state>
       </provider>
     </entry>

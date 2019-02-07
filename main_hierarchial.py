@@ -59,46 +59,47 @@ def to_one_digit_label(onehot_labels):
     for label in onehot_labels: res.append(np.argmax(label))
     return res
 
-## TEXT MODEL HI-LEVEL-LABEL
+## PHASE 1: TEXT MODEL HI-LEVEL-LABEL (TRAINED)
 # input and its shape
-text_input = Input(shape = (30,))
+text_input = Input(shape = (30,), name = 'ph1_input')
 # word embedding
 em_text = Embedding(len(cirno.word_dic) + 1,
                     200,
                     weights = [cirno.get_embed_matrix()],
                     trainable = True)(text_input)
 # masking layer
-text = Masking(mask_value = 0.)(em_text)
+text = Masking(mask_value = 0.,
+               name = 'ph1_mask')(em_text)
 # LSTM layer
 text = LSTM(512,
             return_sequences = True,
             recurrent_dropout = 0.25,
-            name = 'LSTM_text_1')(text)
+            name = 'ph1_LSTM_text_1')(text)
 text = LSTM(256,
             return_sequences = True,
             recurrent_dropout = 0.25,
-            name = 'LSTM_text_2')(text)
+            name = 'ph1_LSTM_text_2')(text)
 # batch normalization
-#text_l1 = BatchNormalization()(text_l1)
+#text_l1 = BatchNormalization(name=)(text_l1)
 # attention layer
-text_weight = AttentionLayer()(text)
-text_weight = Lambda(weight_expand)(text_weight)
-text_vector = Lambda(weight_dot)([text, text_weight])
-text_feature_vector = Lambda(lambda x: backend.sum(x, axis = 1))(text_vector)
+text_weight = AttentionLayer(name = 'ph1_att')(text)
+text_weight = Lambda(weight_expand, name = 'ph1_lam1')(text_weight)
+text_vector = Lambda(weight_dot, name = 'ph1_lam2')([text, text_weight])
+text_feature_vector = Lambda(lambda x: backend.sum(x, axis = 1), name = 'ph1_lam3')(text_vector)
 # dropout layer
-dropout_text = Dropout(0.25)(text_feature_vector)
-dense_text_1 = Dense(128, activation = 'relu')(dropout_text)
-dropout_text = Dropout(0.25)(dense_text_1)
+dropout_text = Dropout(0.25, name = 'ph1_drop1')(text_feature_vector)
+dense_text_1 = Dense(128, activation = 'relu', name = 'ph1_dense')(dropout_text)
+dropout_text = Dropout(0.25, name = 'ph1_drop2')(dense_text_1)
 # decision-making
-text_prediction = Dense(numclass, activation = 'softmax')(dropout_text)
-text_model = Model(inputs = text_input, outputs = text_prediction)
-inter_text = Model(inputs = text_input, outputs = text_feature_vector)
+text_prediction = Dense(numclass, activation = 'softmax', name = 'ph1_dec')(dropout_text)
+text_model = Model(inputs = text_input, outputs = text_prediction, name = 'ph1_model')
+#inter_text = Model(inputs = text_input, outputs = text_feature_vector)
 # optimizer
 adam = Adam(lr = 0.0001, beta_1 = 0.9, beta_2 = 0.999, epsilon = 1e-08)
 text_model.compile(loss = 'categorical_crossentropy', optimizer = adam, metrics = ['accuracy'])
 text_model.summary()
 
-## TEXT MODEL MID-LEVEL-LABEL
+## PHASE 2: TEXT MODEL MID-LEVEL-LABEL
 numclass = len(cirno.label_dic_m)
 # input and its shape
 text_input_2 = Input(shape = (30,))
