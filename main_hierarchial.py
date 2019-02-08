@@ -96,7 +96,7 @@ dropout_text = Dropout(0.25, name = 'ph1_drop1', trainable = phase_1_trainable)(
 dense_text_1 = Dense(128, activation = 'relu', name = 'ph1_dense', trainable = phase_1_trainable)(dropout_text)
 dropout_text = Dropout(0.25, name = 'ph1_drop2', trainable = phase_1_trainable)(dense_text_1)
 # decision-making
-text_prediction = Dense(numclass, activation = 'softmax', name = 'ph1_dec', trainable = phase_1_trainable)(dropout_text)
+#text_prediction = Dense(numclass, activation = 'softmax', name = 'ph1_dec', trainable = phase_1_trainable)(dropout_text)
 '''
 text_model = Model(inputs = text_input, outputs = text_prediction, name = 'ph1_model')
 #inter_text = Model(inputs = text_input, outputs = text_feature_vector)
@@ -108,7 +108,7 @@ text_model.summary()
 
 ## PHASE 2: TEXT MODEL MID-LEVEL-LABEL
 # input and its shape, is output of Phase1
-text_input_2 = text_prediction
+text_input_2 = dropout_text
 # word embedding
 em_text_2 = Embedding(len(cirno.word_dic) + 1,
                     200,
