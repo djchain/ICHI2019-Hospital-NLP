@@ -24,8 +24,8 @@ ToDo: Text branch only, hi mode RNN -> Attach result to mid mode RNN
 '''
 ## TRAING PARAMS
 batch_size = 32
-epoch_count_1 = 10
-epoch_count_2 = 10
+epoch_count_1 = 200
+#epoch_count_2 = 10
 acc_flag_threshould = 60 # threshould of flag to detect in-training effects, not must
 acc_collection = [] # all accuracies
 work_path = '/Volumes/Detchue Base II/731/CNMC/hospital_data'
@@ -36,7 +36,7 @@ phase_1_trainable = False
 ## LOAD DATA
 cirno = data(path = work_path) # all train/test data
 cirno.auto_process(merge_unclear = True)
-cirno.label_mode = 'h'
+cirno.label_mode = 'm'
 numclass = len(cirno.label_dic_h)
 
 ## IN-TRAINING FUNCTIONS
