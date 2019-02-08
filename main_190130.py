@@ -17,8 +17,6 @@ import scipy.io as scio
 from sklearn.metrics import confusion_matrix
 import random
 import pyexcel as pe
-
-
 '''
 @Ruiyu
 2019.01.30
@@ -26,11 +24,11 @@ ToDo: Text branch only, hi mode RNN
 '''
 ## TRAING PARAMS
 batch_size = 32
-epoch_count = 1000
+epoch_count = 200
 acc_flag_threshould = 60 # threshould of flag to detect in-training effects, not must
 acc_collection = [] # all accuracies
-work_path = 'E:/Yue/Entire Data/CNMC/hospital_data'
-saving_path = 'E:/Yue/Entire Data/CNMC'
+work_path = '/Volumes/Detchue Base II/731/CNMC/hospital_data'
+saving_path = '/Volumes/Detchue Base II/731/CNMC'
 saving_name = ['/result/train_text.mat', '/result/test_text.mat']
 label_mode = 'h'
 
