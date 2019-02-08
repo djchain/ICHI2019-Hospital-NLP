@@ -7,6 +7,7 @@ from keras.layers import BatchNormalization, Activation, TimeDistributed
 from keras.layers import Conv1D, GlobalMaxPooling1D, Lambda
 from keras.optimizers import Adam
 from keras import backend
+from keras.callbacks import TensorBoard
 from attention_model import AttentionLayer
 from sklearn.utils import shuffle
 import numpy as np
@@ -59,6 +60,12 @@ def to_one_digit_label(onehot_labels):
     res = []
     for label in onehot_labels: res.append(np.argmax(label))
     return res
+
+# callback for tensorboard
+tb_callback = TensorBoard(log_dir = work_path + '/analyze/tensorboard',
+                                         histogram_freq = 1,
+                                         write_graph = True,
+                                         write_images = True)
 
 ## PHASE 1: TEXT MODEL HI-LEVEL-LABEL (TRAINED)
 # input and its shape
@@ -159,7 +166,8 @@ if __name__ == "__main__":
                        train_label,
                        batch_size = batch_size,
                        epochs = 1,
-                       verbose = 1)
+                       verbose = 1,
+                       callbacks = [tb_callback])
         # evaluate
         loss, acc = text_model_2.evaluate(test_text,
                                             test_label,
