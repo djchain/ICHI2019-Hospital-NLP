@@ -4,9 +4,10 @@ from keras.models import Model
 from keras.layers import Dense, Dropout, Input, LSTM
 from keras.layers import Bidirectional, Masking, Embedding, concatenate
 from keras.layers import BatchNormalization, Activation, TimeDistributed
-from keras.layers import Conv1D, GlobalMaxPooling1D, Lambda
+from keras.layers import Conv1D, GlobalMaxPooling1D, Lambda, Reshape
 from keras.optimizers import Adam
 from keras import backend
+from keras.callbacks import TensorBoard
 from attention_model import AttentionLayer
 from sklearn.utils import shuffle
 import numpy as np
@@ -17,37 +18,27 @@ import scipy.io as scio
 from sklearn.metrics import confusion_matrix
 import random
 import pyexcel as pe
-
 '''
 @Ruiyu
-2019.01.30
-ToDo: Text branch only, hi mode RNN
+2019.02.01
+ToDo: Text branch only, hi mode RNN -> Attach result to mid mode RNN
 '''
 ## TRAING PARAMS
 batch_size = 32
-epoch_count = 1
+epoch_count_1 = 200
+#epoch_count_2 = 10
 acc_flag_threshould = 60 # threshould of flag to detect in-training effects, not must
 acc_collection = [] # all accuracies
 work_path = '/Volumes/Detchue Base II/731/CNMC/hospital_data'
 saving_path = '/Volumes/Detchue Base II/731/CNMC'
 saving_name = ['/result/train_text.mat', '/result/test_text.mat']
-label_mode = 'lower_10'
+phase_1_trainable = False
 
 ## LOAD DATA
 cirno = data(path = work_path) # all train/test data
 cirno.auto_process(merge_unclear = True)
-cirno.label_mode = label_mode
-if label_mode == 'lower_10':
-    numclass = 11
-elif label_mode == 'h':
-    numclass = len(cirno.label_dic_h)
-elif label_mode == 'm':
-    numclass = len(cirno.label_dic_m)
-elif label_mode == 'l':
-    numclass = len(cirno.label_dic_l)
-else:
-    numclass = len(cirno.trainer_lbl_statistics) - len(cirno.unclear_lbl) + 4
-    print('>!>Warning, unknown label mode')
+cirno.label_mode = 'm'
+numclass = len(cirno.label_dic_h)
 
 ## IN-TRAINING FUNCTIONS
 def output_result(train_text, test_text):
@@ -70,62 +61,122 @@ def to_one_digit_label(onehot_labels):
     for label in onehot_labels: res.append(np.argmax(label))
     return res
 
-## TEXT MODEL
+# callback for tensorboard
+tb_callback = TensorBoard(log_dir = work_path + '/analyze/tensorboard',
+                                         histogram_freq = 1,
+                                         write_graph = True,
+                                         write_images = True)
+
+## PHASE 1: TEXT MODEL HI-LEVEL-LABEL (TRAINED)
 # input and its shape
+numclass = len(cirno.label_dic_m)
 text_input = Input(shape = (30,), name = 'ph1_input')
 # word embedding
 em_text = Embedding(len(cirno.word_dic) + 1,
                     200,
                     weights = [cirno.get_embed_matrix()],
-                    trainable = True)(text_input)
+                    trainable = phase_1_trainable)(text_input)
 # masking layer
 text = Masking(mask_value = 0.,
+               trainable = phase_1_trainable,
                name = 'ph1_mask')(em_text)
 # LSTM layer
 text = LSTM(512,
             return_sequences = True,
             recurrent_dropout = 0.25,
-            name = 'ph1_LSTM_text_1')(text)
+            name = 'ph1_LSTM_text_1',
+            trainable = phase_1_trainable)(text)
 text = LSTM(256,
             return_sequences = True,
             recurrent_dropout = 0.25,
-            name = 'ph1_LSTM_text_2')(text)
+            name = 'ph1_LSTM_text_2',
+            trainable = phase_1_trainable)(text)
 # batch normalization
 #text_l1 = BatchNormalization(name=)(text_l1)
 # attention layer
-text_weight = AttentionLayer(name = 'ph1_att')(text)
-text_weight = Lambda(weight_expand, name = 'ph1_lam1')(text_weight)
-text_vector = Lambda(weight_dot, name = 'ph1_lam2')([text, text_weight])
-text_feature_vector = Lambda(lambda x: backend.sum(x, axis = 1), name = 'ph1_lam3')(text_vector)
+text_weight = AttentionLayer(name = 'ph1_att', trainable = phase_1_trainable)(text)
+text_weight = Lambda(weight_expand, name = 'ph1_lam1', trainable = phase_1_trainable)(text_weight)
+text_vector = Lambda(weight_dot, name = 'ph1_lam2', trainable = phase_1_trainable)([text, text_weight])
+text_feature_vector = Lambda(lambda x: backend.sum(x, axis = 1), name = 'ph1_lam3', trainable = phase_1_trainable)(text_vector)
 # dropout layer
-dropout_text = Dropout(0.25, name = 'ph1_drop1')(text_feature_vector)
-dense_text_1 = Dense(128, activation = 'relu', name = 'ph1_dense')(dropout_text)
-dropout_text = Dropout(0.25, name = 'ph1_drop2')(dense_text_1)
+dropout_text = Dropout(0.25, name = 'ph1_drop1', trainable = phase_1_trainable)(text_feature_vector)
+dense_text_1 = Dense(128, activation = 'relu', name = 'ph1_dense', trainable = phase_1_trainable)(dropout_text)
+dropout_text = Dropout(0.25, name = 'ph1_drop2', trainable = phase_1_trainable)(dense_text_1)
 # decision-making
-text_prediction = Dense(numclass, activation = 'softmax', name = 'ph1_dec')(dropout_text)
+#text_prediction = Dense(numclass, activation = 'softmax', name = 'ph1_dec', trainable = phase_1_trainable)(dropout_text)
+'''
 text_model = Model(inputs = text_input, outputs = text_prediction, name = 'ph1_model')
 #inter_text = Model(inputs = text_input, outputs = text_feature_vector)
 # optimizer
 adam = Adam(lr = 0.0001, beta_1 = 0.9, beta_2 = 0.999, epsilon = 1e-08)
 text_model.compile(loss = 'categorical_crossentropy', optimizer = adam, metrics = ['accuracy'])
 text_model.summary()
+'''
+
+## PHASE 2: TEXT MODEL MID-LEVEL-LABEL
+# input and its shape, is output of Phase1
+text_input_2 = dropout_text
+text_2 = text_input_2
+# word embedding
+'''
+em_text_2 = Embedding(len(cirno.word_dic) + 1,
+                    200,
+                    weights = [cirno.get_embed_matrix()],
+                    trainable = True)(text_input_2)
+# masking layer
+text_2 = Masking(mask_value = 0.)(em_text_2)
+'''
+# Since we no longer do embed and mask, we instead shall modify to fit into lstm
+
+# LSTM layer
+text_2 = LSTM(512,
+            return_sequences = True,
+            input_shape = text_2.shape,
+            recurrent_dropout = 0.25,
+            name = 'ph2_LSTM_text_1')(text_2)
+text_2 = LSTM(256,
+            return_sequences = True,
+            recurrent_dropout = 0.25,
+            name = 'ph2_LSTM_text_2')(text_2)
+# batch normalization
+#text_l1 = BatchNormalization()(text_l1)
+# attention layer
+text_weight_2 = AttentionLayer()(text_2)
+text_weight_2 = Lambda(weight_expand)(text_weight_2)
+text_vector_2 = Lambda(weight_dot)([text_2, text_weight_2])
+#text_feature_vector_2 = Lambda(lambda x: backend.sum(x, axis = 1))(text_vector_2)
+text_feature_vector_2 = concatenate(text_vector_2, text_vector)
+# dropout layer
+dropout_text_2 = Dropout(0.25)(text_feature_vector_2)
+dense_text_1_2 = Dense(128, activation = 'relu')(dropout_text_2)
+dropout_text_2 = Dropout(0.25)(dense_text_1_2)
+# decision-making
+text_prediction_2 = Dense(numclass, activation = 'softmax')(dropout_text_2)
+text_model_2 = Model(inputs = text_input, outputs = text_prediction_2)
+# optimizer
+adam = Adam(lr = 0.0001, beta_1 = 0.9, beta_2 = 0.999, epsilon = 1e-08)
+text_model_2.compile(loss = 'categorical_crossentropy', optimizer = adam, metrics = ['accuracy'])
+text_model_2.summary()
 
 ## MAIN
 if __name__ == "__main__":
+    # HI-LEVEL-LABEL MODE TRAINING
     acc_max = 0
-    for i in range(epoch_count):
-        print('\n\n>>>High-level-label Text Training Epoch: ' + str(i) + ' out of ' + str(epoch_count))
+    text_model_2.load_weights(saving_path + 'entire_text_output_weights.h5', by_name = True)
+    for i in range(epoch_count_1):
+        print('\n\n>>>High-level-label Text Training Epoch: ' + str(i + 1) + ' out of ' + str(epoch_count_1))
         # get data
         test_label, test_text, test_audio_left, test_audio_right = cirno.get_tester(average = True)
         train_label, train_text, train_audio_left, train_audio_right = cirno.get_trainer(average = True)
         # train
-        text_model.fit(train_text,
+        text_model_2.fit(train_text,
                        train_label,
                        batch_size = batch_size,
                        epochs = 1,
-                       verbose = 1)
+                       verbose = 1,
+                       callbacks = [tb_callback])
         # evaluate
-        loss, acc = text_model.evaluate(test_text,
+        loss, acc = text_model_2.evaluate(test_text,
                                             test_label,
                                             batch_size = batch_size,
                                             verbose = 0)
@@ -135,7 +186,7 @@ if __name__ == "__main__":
         cirno.write_epoch_acc(i, acc) # record in analyze file
         if acc > acc_max:
             acc_max = acc
-            text_model.save_weights(saving_path + 'entire_text_output_weights.h5')
+            text_model_2.save_weights(saving_path + 'entire_hierarchial_text_output_weights.h5')
             #inter_text.save_weights(saving_path+'inter_text_output_weights.h5')
     # load final(best) weights
     #inter_text.load_weights(saving_path+'inter_text_output_weights.h5')
@@ -146,11 +197,4 @@ if __name__ == "__main__":
     print('\n\n>>>High-level-label Training All Done')
     print('>Max Text Acc =', acc_max)
 
-    # Calc confusion matrix
-    test_label, test_text, _1, _2 = cirno.get_tester()
-    predictions = text_model.predict(test_text)
-    #np.savetxt(work_path + "test_label.txt", test_label, fmt='%.3f')
-    #np.savetxt(work_path + "predictions.txt", predictions, fmt='%.3f')
-    confusion = confusion_matrix(np.argmax(test_label, axis=1), np.argmax(predictions, axis=1))
-    print(confusion)
-    np.savetxt(work_path + "/analyze/confusion_matrix.txt")
+

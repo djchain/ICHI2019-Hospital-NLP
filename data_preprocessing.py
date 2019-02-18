@@ -485,7 +485,7 @@ class data():
         self._train_test_statistics(lbl,lbl_dic, 'test')
         L = sequence.pad_sequences(np.array(L),dtype='float32', maxlen=self.voice_pad_len)
         R = sequence.pad_sequences(np.array(R),dtype='float32', maxlen=self.voice_pad_len)
-        sent =sequence.pad_sequences(sent,dtype='float32', maxlen=self.sent_pad_len)
+        sent = sequence.pad_sequences(sent,dtype='float32', maxlen=self.sent_pad_len)
         if self.label_mode=='lower_10':
             if not self.label_dic_lower_10:
                 self.lable_dic_lower_10 = re_index(lbl)
@@ -494,6 +494,135 @@ class data():
             # print('test label dic: ', self.lable_dic_lower_10)
         else:
             lbl = to_categorical(lbl, num_classes=len(lbl_dic))
+        return lbl,sent,L,R
+
+    def get_raw_trainer(self,average=False,average_size=60,sort=False):
+        #return sentence with label, training set and testing set, not piled for training
+        #label_vec or [label_vec],[sentence_vec],arr[L_voice],arr[R_voice]
+        lbl,sent,L,R=[],[],[],[]
+        if self.label_mode=='h':
+            lbl_dic=self.label_dic_h
+            lbl_tag=1
+            print('>Label hierarchy: High')
+        elif self.label_mode=='m':
+            lbl_dic=self.label_dic_m
+            lbl_tag = 2
+            print('>Label hierarchy: Midium')
+        elif self.label_mode=='l':
+            lbl_dic=self.label_dic_l
+            lbl_tag = 3
+            print('>Label hierarchy: Low')
+        elif self.label_mode=='lower_10':
+            print('>!Warning: lower 10 label mode is adopted')
+            lbl_dic=self.label_dic_l
+            lbl_tag = 3
+            tar_list = ['Back', 'GCS Calculation', 'Oxygen', 'Head', 'C-Spine', 'Pulse Check', 'Blood Pressure',
+                        'Extremity', 'Mouth', 'Abdomen','NULL']
+            if 'NULL' not in lbl_dic:
+                lbl_dic['NULL']=len(lbl_dic)
+            for l,i in  lbl_dic.items():
+                if l not in tar_list:
+                    lbl_dic[l]=lbl_dic['NULL']#不在上面要求的十个之列，则置空
+        else:
+            print('>!Error getting trainers: Unidentified label_mode. Returning NULL data.')
+            return lbl,sent,L,R
+        if sort:
+            for key,val in sorted(self.data.items(),key=lambda item:item[0]):
+                if key[0] in self.trainer:
+                    if lbl_tag < 3:
+                        lbl.append(lbl_dic[val[lbl_tag]])
+                    else:
+                        lbl.append(lbl_dic[val[lbl_tag][0]])
+                    sent.append(self.sent2vec[key])
+                    L.append(val[4].transpose())
+                    R.append(val[5].transpose())
+        else:
+            keys=list(self.data.keys())
+            random.shuffle(keys)
+            for key in keys:
+                val=self.data[key]
+                if key[0] in self.trainer and val[4]!='NA' and val[5]!='NA':
+                    if lbl_tag < 3:
+                        lbl.append(lbl_dic[val[lbl_tag]])
+                    else:
+                        lbl.append(lbl_dic[val[lbl_tag][0]])
+                    sent.append(self.sent2vec[key])
+                    L.append(val[4].transpose())
+                    R.append(val[5].transpose())
+
+        if average:
+            #lbl,sent,L,R=self._batch_average(lbl,sent,L,R)
+            lbl,sent,L,R=self._ramdon_select_from_trainertester(lbl,sent,L,R,each_count=average_size)
+        self._train_test_statistics(lbl, lbl_dic,'train')
+        '''
+        L = sequence.pad_sequences(np.array(L),dtype='float32', padding='pre', maxlen=self.voice_pad_len, value=0.)
+        R = sequence.pad_sequences(np.array(R),dtype='float32', padding='pre', maxlen=self.voice_pad_len, value=0.)
+        sent =sequence.pad_sequences(sent,dtype='float32', padding='pre', maxlen=self.sent_pad_len)
+        if self.label_mode=='lower_10':
+            if not self.label_dic_lower_10:
+                self.lable_dic_lower_10 = re_index(lbl)
+            lbl = [self.lable_dic_lower_10[x] for x in lbl]
+            lbl = to_categorical(lbl, num_classes=11)
+            # print('train label dic: ', self.lable_dic_lower_10)
+        else:
+            lbl = to_categorical(lbl, num_classes=len(lbl_dic))
+        '''
+        return lbl,sent,L,R
+
+
+    def get_raw_tester(self,average=False,average_size=60):
+        #return sentence with label, training set and testing set, not piled for training
+        #label_vec or [label_vec],[sentence_vec],arr[L_voice],arr[R_voice]
+        lbl,sent,L,R=[],[],[],[]
+        if self.label_mode=='h':
+            lbl_dic=self.label_dic_h
+            lbl_tag=1
+        elif self.label_mode=='m':
+            lbl_dic=self.label_dic_m
+            lbl_tag = 2
+        elif self.label_mode=='l':
+            lbl_dic=self.label_dic_l
+            lbl_tag = 3
+        elif self.label_mode == 'lower_10':
+            print('>!Warning: lower 10 label mode is adopted')
+            lbl_dic = self.label_dic_l
+            lbl_tag = 3
+            tar_list = ['Back', 'GCS Calculation', 'Oxygen', 'Head', 'C-Spine', 'Pulse Check', 'Blood Pressure',
+                        'Extremity', 'Mouth', 'Abdomen', 'NULL']
+            if 'NULL' not in lbl_dic:
+                lbl_dic['NULL']=len(lbl_dic)
+            for l, i in lbl_dic.items():
+                if l not in tar_list:
+                    lbl_dic[l] = lbl_dic['NULL']  # 不在上面要求的十个之列，则置空
+                #else:print('TEST: 10 LABEL FILTER WORKS')
+        else:
+            print('>!Error getting testers: Unidentified label_mode. Returning NULL data.')
+            return lbl,sent,L,R
+        for key,val in sorted(self.data.items(),key=lambda item:item[0]):
+            if key[0] in self.tester and val[4]!='NA' and val[5]!='NA':
+                if lbl_tag<3:
+                    lbl.append(lbl_dic[val[lbl_tag]])
+                else:
+                    lbl.append(lbl_dic[val[lbl_tag][0]])
+                sent.append(self.sent2vec[key])
+                L.append(val[4].transpose())
+                R.append(val[5].transpose())
+        if average:
+            lbl,sent,L,R=self._ramdon_select_from_trainertester(lbl,sent,L,R,each_count=average_size)
+        self._train_test_statistics(lbl,lbl_dic, 'test')
+        '''
+        L = sequence.pad_sequences(np.array(L),dtype='float32', maxlen=self.voice_pad_len)
+        R = sequence.pad_sequences(np.array(R),dtype='float32', maxlen=self.voice_pad_len)
+        sent = sequence.pad_sequences(sent,dtype='float32', maxlen=self.sent_pad_len)
+        if self.label_mode=='lower_10':
+            if not self.label_dic_lower_10:
+                self.lable_dic_lower_10 = re_index(lbl)
+            lbl = [self.lable_dic_lower_10[x] for x in lbl]
+            lbl = to_categorical(lbl, num_classes=11)
+            # print('test label dic: ', self.lable_dic_lower_10)
+        else:
+            lbl = to_categorical(lbl, num_classes=len(lbl_dic))
+        '''
         return lbl,sent,L,R
 
     def get_traintest_script(self,filename):
