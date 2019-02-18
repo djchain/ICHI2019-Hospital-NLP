@@ -25,7 +25,7 @@ ToDo: Text branch only, hi mode RNN
 '''
 ## TRAING PARAMS
 batch_size = 32
-epoch_count = 1
+epoch_count = 10
 acc_flag_threshould = 60 # threshould of flag to detect in-training effects, not must
 acc_collection = [] # all accuracies
 work_path = '/Volumes/Detchue Base II/731/CNMC/hospital_data'
@@ -113,6 +113,7 @@ text_model.summary()
 ## MAIN
 if __name__ == "__main__":
     acc_max = 0
+    text_model.load_weights(saving_path + 'entire_text_output_weights.h5')
     for i in range(epoch_count):
         print('\n\n>>>High-level-label Text Training Epoch: ' + str(i) + ' out of ' + str(epoch_count))
         # get data
@@ -154,3 +155,16 @@ if __name__ == "__main__":
     confusion = confusion_matrix(np.argmax(test_label, axis=1), np.argmax(predictions, axis=1))
     print(confusion)
     np.savetxt(work_path + "/analyze/confusion_matrix.csv", confusion, fmt = '%.0f', delimiter=",")
+    '''
+    null_label = cirno.label_dic_lower_10['NULL']
+    modified_label_dic = {}
+    for key, val in cirno.label_dic_lower_10.items():
+        if val != null_label:
+            modified_label_dic[val] = key
+    modified_label_dic[null_label] = 'NULL'
+    print(modified_label_dic)
+    '''
+    num_to_lbl = {}
+    for label, num in cirno.label_dic_before_categorical.items():
+        num_to_lbl[num] = num_to_lbl.get(num, []).append(label)
+    print(num_to_lbl)

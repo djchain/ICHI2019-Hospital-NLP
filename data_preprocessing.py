@@ -100,6 +100,7 @@ class data():
         self.label_dic_m={}
         self.label_dic_l={}
         self.label_dic_lower_10={}
+        self.label_dic_before_categorical = []
         self.label_mode='h'
         self.sent2vec={}#use word_dic to translate sentence into vectors
         #[sentense,label:cat,label:goal,[label:general_task],[[LeftAudio]],[[RightAudio]]]
@@ -395,9 +396,10 @@ class data():
                         'Extremity', 'Mouth', 'Abdomen','NULL']
             if 'NULL' not in lbl_dic:
                 lbl_dic['NULL']=len(lbl_dic)
-            for l,i in  lbl_dic.items():
+            for l, i in lbl_dic.items():
                 if l not in tar_list:
                     lbl_dic[l]=lbl_dic['NULL']#不在上面要求的十个之列，则置空
+            self.label_dic_lower_10 = lbl_dic
         else:
             print('>!Error getting trainers: Unidentified label_mode. Returning NULL data.')
             return lbl,sent,L,R
@@ -471,6 +473,7 @@ class data():
         else:
             print('>!Error getting testers: Unidentified label_mode. Returning NULL data.')
             return lbl,sent,L,R
+        self.label_dic_before_categorical = lbl_dic
         for key,val in sorted(self.data.items(),key=lambda item:item[0]):
             if key[0] in self.tester and val[4]!='NA' and val[5]!='NA':
                 if lbl_tag<3:
