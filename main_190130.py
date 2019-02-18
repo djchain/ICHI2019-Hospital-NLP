@@ -17,6 +17,7 @@ import scipy.io as scio
 from sklearn.metrics import confusion_matrix
 import random
 import pyexcel as pe
+
 '''
 @Ruiyu
 2019.01.30
@@ -24,13 +25,13 @@ ToDo: Text branch only, hi mode RNN
 '''
 ## TRAING PARAMS
 batch_size = 32
-epoch_count = 200
+epoch_count = 1
 acc_flag_threshould = 60 # threshould of flag to detect in-training effects, not must
 acc_collection = [] # all accuracies
 work_path = '/Volumes/Detchue Base II/731/CNMC/hospital_data'
 saving_path = '/Volumes/Detchue Base II/731/CNMC'
 saving_name = ['/result/train_text.mat', '/result/test_text.mat']
-label_mode = 'h'
+label_mode = 'lower_10'
 
 ## LOAD DATA
 cirno = data(path = work_path) # all train/test data
@@ -144,3 +145,12 @@ if __name__ == "__main__":
 
     print('\n\n>>>High-level-label Training All Done')
     print('>Max Text Acc =', acc_max)
+
+    # Calc confusion matrix
+    test_label, test_text, _1, _2 = cirno.get_tester()
+    predictions = text_model.predict(test_text)
+    #np.savetxt(work_path + "test_label.txt", test_label, fmt='%.3f')
+    #np.savetxt(work_path + "predictions.txt", predictions, fmt='%.3f')
+    confusion = confusion_matrix(np.argmax(test_label, axis=1), np.argmax(predictions, axis=1))
+    print(confusion)
+    np.savetxt(work_path + "/analyze/confusion_matrix.txt")

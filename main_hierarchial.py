@@ -4,7 +4,7 @@ from keras.models import Model
 from keras.layers import Dense, Dropout, Input, LSTM
 from keras.layers import Bidirectional, Masking, Embedding, concatenate
 from keras.layers import BatchNormalization, Activation, TimeDistributed
-from keras.layers import Conv1D, GlobalMaxPooling1D, Lambda
+from keras.layers import Conv1D, GlobalMaxPooling1D, Lambda, Reshape
 from keras.optimizers import Adam
 from keras import backend
 from keras.callbacks import TensorBoard
@@ -29,8 +29,8 @@ epoch_count_1 = 200
 #epoch_count_2 = 10
 acc_flag_threshould = 60 # threshould of flag to detect in-training effects, not must
 acc_collection = [] # all accuracies
-work_path = 'E:/Yue/Entire Data/CNMC/hospital_data'
-saving_path = 'E:/Yue/Entire Data/CNMC'
+work_path = '/Volumes/Detchue Base II/731/CNMC/hospital_data'
+saving_path = '/Volumes/Detchue Base II/731/CNMC'
 saving_name = ['/result/train_text.mat', '/result/test_text.mat']
 phase_1_trainable = False
 
@@ -116,16 +116,22 @@ text_model.summary()
 ## PHASE 2: TEXT MODEL MID-LEVEL-LABEL
 # input and its shape, is output of Phase1
 text_input_2 = dropout_text
+text_2 = text_input_2
 # word embedding
+'''
 em_text_2 = Embedding(len(cirno.word_dic) + 1,
                     200,
                     weights = [cirno.get_embed_matrix()],
                     trainable = True)(text_input_2)
 # masking layer
 text_2 = Masking(mask_value = 0.)(em_text_2)
+'''
+# Since we no longer do embed and mask, we instead shall modify to fit into lstm
+
 # LSTM layer
 text_2 = LSTM(512,
             return_sequences = True,
+            input_shape = text_2.shape,
             recurrent_dropout = 0.25,
             name = 'ph2_LSTM_text_1')(text_2)
 text_2 = LSTM(256,
@@ -138,7 +144,8 @@ text_2 = LSTM(256,
 text_weight_2 = AttentionLayer()(text_2)
 text_weight_2 = Lambda(weight_expand)(text_weight_2)
 text_vector_2 = Lambda(weight_dot)([text_2, text_weight_2])
-text_feature_vector_2 = Lambda(lambda x: backend.sum(x, axis = 1))(text_vector_2)
+#text_feature_vector_2 = Lambda(lambda x: backend.sum(x, axis = 1))(text_vector_2)
+text_feature_vector_2 = concatenate(text_vector_2, text_vector)
 # dropout layer
 dropout_text_2 = Dropout(0.25)(text_feature_vector_2)
 dense_text_1_2 = Dense(128, activation = 'relu')(dropout_text_2)
