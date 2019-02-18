@@ -25,11 +25,11 @@ ToDo: Text branch only, hi mode RNN
 '''
 ## TRAING PARAMS
 batch_size = 32
-epoch_count = 1
+epoch_count = 20
 acc_flag_threshould = 60 # threshould of flag to detect in-training effects, not must
 acc_collection = [] # all accuracies
-work_path = '/Volumes/Detchue Base II/731/CNMC/hospital_data'
-saving_path = '/Volumes/Detchue Base II/731/CNMC'
+work_path = 'D:/CNMC/hospital_data'
+saving_path = 'D:/CNMC'
 saving_name = ['/result/train_text.mat', '/result/test_text.mat']
 label_mode = 'lower_10'
 
@@ -149,8 +149,6 @@ if __name__ == "__main__":
     # Calc confusion matrix
     test_label, test_text, _1, _2 = cirno.get_tester()
     predictions = text_model.predict(test_text)
-    #np.savetxt(work_path + "test_label.txt", test_label, fmt='%.3f')
-    #np.savetxt(work_path + "predictions.txt", predictions, fmt='%.3f')
     confusion = confusion_matrix(np.argmax(test_label, axis=1), np.argmax(predictions, axis=1))
     print(confusion)
-    np.savetxt(work_path + "/analyze/confusion_matrix.txt")
+    np.savetxt(work_path + "/analyze/confusion_matrix.csv", confusion, fmt='%.0f', delimiter=',')
