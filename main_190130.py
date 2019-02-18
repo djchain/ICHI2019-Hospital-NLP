@@ -153,4 +153,4 @@ if __name__ == "__main__":
     #np.savetxt(work_path + "predictions.txt", predictions, fmt='%.3f')
     confusion = confusion_matrix(np.argmax(test_label, axis=1), np.argmax(predictions, axis=1))
     print(confusion)
-    np.savetxt(work_path + "/analyze/confusion_matrix.txt")
+    np.savetxt(work_path + "/analyze/confusion_matrix.csv", confusion, fmt = '%.0f', delimiter=",")
