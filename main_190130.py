@@ -25,7 +25,7 @@ ToDo: Text branch only, hi mode RNN
 '''
 ## TRAING PARAMS
 batch_size = 32
-epoch_count = 20
+epoch_count = 300
 acc_flag_threshould = 60 # threshould of flag to detect in-training effects, not must
 acc_collection = [] # all accuracies
 work_path = 'D:/CNMC/hospital_data'
@@ -70,6 +70,12 @@ def to_one_digit_label(onehot_labels):
     for label in onehot_labels: res.append(np.argmax(label))
     return res
 
+# callback for tensorboard
+tb_callback = TensorBoard(log_dir = work_path + '/analyze/tensorboard',
+                                         histogram_freq = 1,
+                                         write_graph = True,
+                                         write_images = True)
+
 ## TEXT MODEL
 # input and its shape
 text_input = Input(shape = (30,), name = 'ph1_input')
@@ -113,6 +119,7 @@ text_model.summary()
 ## MAIN
 if __name__ == "__main__":
     acc_max = 0
+    #text_model.load_weights(saving_path + 'entire_text_output_weights.h5')
     for i in range(epoch_count):
         print('\n\n>>>High-level-label Text Training Epoch: ' + str(i) + ' out of ' + str(epoch_count))
         # get data
@@ -147,8 +154,20 @@ if __name__ == "__main__":
     print('>Max Text Acc =', acc_max)
 
     # Calc confusion matrix
-    test_label, test_text, _1, _2 = cirno.get_tester()
+    test_label, test_text, _1, _2 = cirno.get_tester(debug=True)
     predictions = text_model.predict(test_text)
+    #np.savetxt(work_path + "test_label.txt", test_label, fmt='%.3f')
+    #np.savetxt(work_path + "predictions.txt", predictions, fmt='%.3f')
     confusion = confusion_matrix(np.argmax(test_label, axis=1), np.argmax(predictions, axis=1))
     print(confusion)
-    np.savetxt(work_path + "/analyze/confusion_matrix.csv", confusion, fmt='%.0f', delimiter=',')
+    np.savetxt(work_path + "/analyze/confusion_matrix.csv", confusion, fmt = '%.0f', delimiter=",")
+
+
+    #print(cirno.lower_10_transfer_dic)
+    #print(cirno.tester_lbl_dic)
+    index_to_label = {}
+    for label, raw_index in cirno.tester_lbl_dic.items():
+        index = cirno.lower_10_transfer_dic[raw_index]
+        if index_to_label.get(index) != 'NULL':
+            index_to_label[index] = label
+    print(index_to_label)
