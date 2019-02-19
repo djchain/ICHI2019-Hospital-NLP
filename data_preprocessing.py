@@ -44,6 +44,7 @@ from keras.preprocessing import sequence
 from keras.utils.np_utils import to_categorical
 import time
 import scipy.io as scio
+from copy import  deepcopy
 
 #reload(sys)
 #sys.setdefaultencoding('utf-8')
@@ -100,7 +101,8 @@ class data():
         self.label_dic_m={}
         self.label_dic_l={}
         self.label_dic_lower_10={}
-        self.label_dic_before_categorical = []
+        self.lower_10_transfer_dic = None # for debug
+        self.tester_lbl_dic = None # for debug
         self.label_mode='h'
         self.sent2vec={}#use word_dic to translate sentence into vectors
         #[sentense,label:cat,label:goal,[label:general_task],[[LeftAudio]],[[RightAudio]]]
@@ -399,7 +401,6 @@ class data():
             for l, i in lbl_dic.items():
                 if l not in tar_list:
                     lbl_dic[l]=lbl_dic['NULL']#不在上面要求的十个之列，则置空
-            self.label_dic_lower_10 = lbl_dic
         else:
             print('>!Error getting trainers: Unidentified label_mode. Returning NULL data.')
             return lbl,sent,L,R
@@ -445,7 +446,7 @@ class data():
         return lbl,sent,L,R
 
 
-    def get_tester(self,average=False,average_size=60):
+    def get_tester(self,average=False,average_size=60,debug=False):
         #return sentence with label, training set and testing set
         #label_vec or [label_vec],[sentence_vec],arr[L_voice],arr[R_voice]
         lbl,sent,L,R=[],[],[],[]
@@ -473,7 +474,6 @@ class data():
         else:
             print('>!Error getting testers: Unidentified label_mode. Returning NULL data.')
             return lbl,sent,L,R
-        self.label_dic_before_categorical = lbl_dic
         for key,val in sorted(self.data.items(),key=lambda item:item[0]):
             if key[0] in self.tester and val[4]!='NA' and val[5]!='NA':
                 if lbl_tag<3:
@@ -492,6 +492,9 @@ class data():
         if self.label_mode=='lower_10':
             if not self.label_dic_lower_10:
                 self.lable_dic_lower_10 = re_index(lbl)
+                if debug:
+                    self.lower_10_transfer_dic = re_index(lbl)
+                    self.tester_lbl_dic = lbl_dic
             lbl = [self.lable_dic_lower_10[x] for x in lbl]
             lbl = to_categorical(lbl, num_classes=11)
             # print('test label dic: ', self.lable_dic_lower_10)

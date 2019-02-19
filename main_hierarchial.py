@@ -12,7 +12,6 @@ from attention_model import AttentionLayer
 from sklearn.utils import shuffle
 import numpy as np
 from data_preprocessing import data
-from keras.callbacks import TensorBoard
 import os
 import scipy.io as scio
 from sklearn.metrics import confusion_matrix
