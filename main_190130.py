@@ -120,7 +120,7 @@ text_model.summary()
 if __name__ == "__main__":
     acc_max = 0
     #text_model.load_weights(saving_path + 'entire_text_output_weights.h5')
-    for i in range(epoch_count):
+    for i in range(1, epoch_count + 1):
         print('\n\n>>>High-level-label Text Training Epoch: ' + str(i) + ' out of ' + str(epoch_count))
         # get data
         test_label, test_text, test_audio_left, test_audio_right = cirno.get_tester(average = True)

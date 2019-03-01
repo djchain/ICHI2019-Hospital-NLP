@@ -162,7 +162,7 @@ if __name__ == "__main__":
     # HI-LEVEL-LABEL MODE TRAINING
     acc_max = 0
     text_model_2.load_weights(saving_path + 'entire_text_output_weights.h5', by_name = True)
-    for i in range(epoch_count_1):
+    for i in range(1, epoch_count_1 + 1):
         print('\n\n>>>High-level-label Text Training Epoch: ' + str(i + 1) + ' out of ' + str(epoch_count_1))
         # get data
         test_label, test_text, test_audio_left, test_audio_right = cirno.get_tester(average = True)
