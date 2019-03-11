@@ -128,7 +128,7 @@ class data():
         self.path=path
         print('>>>Done: Working path change.')
 
-    def auto_process(self,merge_unclear=False):
+    def auto_process(self, merge_unclear=False, load_audio = True):
         if self.diagnose:
             sd=open(self.path + 'analyze/SentenceDiagnose.txt', 'w')
             sd.write(str_makeup('XLSX NAME', 30) + 'NUM' + '  ' + str_makeup('GIVEN LABEL', 85) + str('SENTENCE' + '\n\n'))
@@ -149,7 +149,10 @@ class data():
                 if self.diagnose and self.diag_print:
                     sd.write(str_makeup(xlsx_name,30)+str_make0(row_num,3)+'  '+str_makeup(gen_lbl,85)+str(whole_data[row_num][4])+'\n')
                     self.diag_print=False
-                cval[4],cval[5]=self._read_mat(self._key_adapt(key))
+                if load_audio:
+                    cval[4],cval[5]=self._read_mat(self._key_adapt(key))
+                else: # skip audio loading
+                    cval[4], cval[5] = np.zeros(shape = (1,1)), np.zeros(shape = (1,1))
                 # data=addto_dic(key,cval,data)
                 self.data[key] = cval
         sys.stdout.write('\r>>>Done: Load all scripts.\n')
@@ -1004,14 +1007,14 @@ class data():
                 left=left['z1']#to array
                 #print('read  mat:', path + 'L/' + name + '.mat')
             else:
-                left='NA'
+                left = np.zeros(shape = (1,1))
                 #print('>!',name+'.mat','not found')
 
             if os.path.exists(path+'R/'+name+'.mat'):
-                right= scio.loadmat(path+'R/'+name+'.mat')
-                right=right['z1']
+                right = scio.loadmat(path+'R/'+name+'.mat')
+                right = right['z1']
             else:
-                right='NA'
+                right = np.zeros(shape = (1,1))
                 #print('>!',name+'.mat','not found')
         except IOError:
             print('>Voice file not loaded:',name+'.mat')
@@ -1111,12 +1114,12 @@ class data():
 
 def main():
 
-    path = r'/Volumes/NaturalLanguageProcessing/Entire Data/CNMC/hospital_data'
+    path = r'D:/CNMC/hospital_data'
     #test_data.load()
     test_data=data(path=path)
     test_data.unclear_lbl.append('Monitor Vital Signs')
     test_data.diagnose=True
-    test_data.auto_process(merge_unclear=True)
+    test_data.auto_process(merge_unclear=True, load_audio=False)
 
     #multi-label
     if path[-1] != '\\':path += '\\'
@@ -1138,8 +1141,8 @@ def main():
     print(test_data.trainer_lbl_statistics)
     print(len(test_data.trainer_lbl_statistics))
     print(test_data.xlsx_list)
-'''
-
+    '''
+    '''
     #输出文件每一行都是一句话，所有话。必要的十个activity显示出来。其他隐藏。
     new_path=path+'TenActivity/'
     tar_list=['Back','GCS Calculation','Oxygen','Head','C-Spine','Pulse Check','Blood Pressure','Left lower extremity','Mouth','Abdomen']
@@ -1155,5 +1158,17 @@ def main():
         f.write(wr+'\n')
         f.close()
     print('>>>Done writing TenAct')
+    '''
+    # 统计lower10的数量
+    tar_list = ['Back', 'GCS Calculation', 'Oxygen', 'Head', 'C-Spine', 'Pulse Check', 'Blood Pressure',
+                        'Extremity', 'Mouth', 'Abdomen']
+    counter = {}
+    for label in tar_list:
+        counter[label] = 0
+    for value in test_data.data.values():
+        if value[3][0] in tar_list:
+            counter[value[3][0]] += 1
+    print(counter)
+    print("total = ", sum(counter.values()))
 if __name__=='__main__':
     main()
