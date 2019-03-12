@@ -359,7 +359,7 @@ class data():
             for i,word in enumerate(sent):
                 if word not in self.word_dic.keys():
                     self.word_dic[word]=len(self.word_dic)+1
-                    print('>Warning: One word not found in dict. Solved by updating word_dic')
+                    print('>Warning: One word not found in dict. Solved by updating word_dic.')
                 sent[i] = self.word_dic[word]
             self.sent2vec[key]=sent
         print('>>>Done: Updated word embedded sentences.')
@@ -448,7 +448,6 @@ class data():
             lbl = to_categorical(lbl, num_classes=len(lbl_dic))
         return lbl,sent,L,R
 
-
     def get_tester(self,average=False,average_size=60,debug=False):
         #return sentence with label, training set and testing set
         #label_vec or [label_vec],[sentence_vec],arr[L_voice],arr[R_voice]
@@ -504,6 +503,49 @@ class data():
         else:
             lbl = to_categorical(lbl, num_classes=len(lbl_dic))
         return lbl,sent,L,R
+
+    def get_data_for_analyze(self, label = None, traintest = None):
+        # get data from both trainer and tester, with data including both feature and raw data
+        lbl, sent, L, R, raw_lbl, raw_sent = [], [], [], [], [], []
+        if self.label_mode=='h': lbl_dic, lbl_tag = self.label_dic_h, 1
+        elif self.label_mode=='m': lbl_dic, lbl_tag = self.label_dic_m, 2
+        elif self.label_mode=='l': lbl_dic, lbl_tag = self.label_dic_l, 3
+        elif self.label_mode == 'lower_10':
+            print('>!Warning: lower 10 label mode is adopted')
+            lbl_dic, lbl_tag = self.label_dic_l, 3
+            tar_list = ['Back', 'GCS Calculation', 'Oxygen', 'Head', 'C-Spine', 'Pulse Check', 'Blood Pressure',
+                        'Extremity', 'Mouth', 'Abdomen', 'NULL']
+            if 'NULL' not in lbl_dic: lbl_dic['NULL'] = len(lbl_dic)
+            for l, i in lbl_dic.items():
+                if l not in tar_list:
+                    lbl_dic[l] = lbl_dic['NULL']  # 不在上面要求的十个之列，则置空
+                #else:print('TEST: 10 LABEL FILTER WORKS')
+        else:
+            print('>!Error getting testers: Unidentified label_mode. Returning NULL data.')
+            return lbl, sent, L, R, raw_lbl, raw_sent
+        # Preprocess
+        for key, val in sorted(self.data.items(),key=lambda item:item[0]):
+            l = val[lbl_tag] if lbl_tag < 3 else val[lbl_tag][0]
+            if label and label != l: continue # if label filter "var label" is active
+            lbl.append(lbl_dic[l])
+            raw_lbl.append(l)
+            sent.append(self.sent2vec[key])
+            raw_sent.append(val[0])
+            L.append(val[4].transpose())
+            R.append(val[5].transpose())
+        L = sequence.pad_sequences(np.array(L),dtype='float32', maxlen=self.voice_pad_len)
+        R = sequence.pad_sequences(np.array(R),dtype='float32', maxlen=self.voice_pad_len)
+        sent = sequence.pad_sequences(sent,dtype='float32', maxlen=self.sent_pad_len)
+        if self.label_mode=='lower_10':
+            if not self.label_dic_lower_10:
+                self.lable_dic_lower_10 = re_index(lbl)
+            lbl = [self.lable_dic_lower_10[x] for x in lbl]
+            lbl = to_categorical(lbl, num_classes=11)
+            # print('test label dic: ', self.lable_dic_lower_10)
+        else:
+            lbl = to_categorical(lbl, num_classes=len(lbl_dic))
+        return lbl, sent, L, R, raw_lbl, raw_sent
+
 
     def get_raw_trainer(self,average=False,average_size=60,sort=False):
         #return sentence with label, training set and testing set, not piled for training
@@ -577,7 +619,6 @@ class data():
             lbl = to_categorical(lbl, num_classes=len(lbl_dic))
         '''
         return lbl,sent,L,R
-
 
     def get_raw_tester(self,average=False,average_size=60):
         #return sentence with label, training set and testing set, not piled for training

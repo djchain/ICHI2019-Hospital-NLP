@@ -31,9 +31,9 @@ batch_size = 32
 epoch_count = 100
 acc_flag_threshould = 60 # threshould of flag to detect in-training effects, not must
 acc_collection = [] # all accuracies
-work_path = 'D:/CNMC/hospital_data'
-saving_path = 'D:/CNMC'
-saving_name = ['/result/train_text.mat', '/result/test_text.mat']
+work_path = 'D:/CNMC/hospital_data/'
+saving_path = 'D:/CNMC/'
+saving_name = ['result/train_text.mat', 'result/test_text.mat']
 label_mode = 'lower_10'
 
 ## LOAD DATA
@@ -106,7 +106,7 @@ text_weight = AttentionLayer(name = 'ph1_att')(text)
 text_weight = Lambda(weight_expand, name = 'ph1_lam1')(text_weight) # Get the score
 text_vector = Lambda(weight_dot, name = 'ph1_lam2')([text, text_weight])
 text_feature_vector = Lambda(lambda x: backend.sum(x, axis = 1), name = 'ph1_lam3')(text_vector)
-text_weight_inter = Model(inputs = text_weight, output = text_feature_vector) # 
+text_weight_inter = Model(inputs = text_input, output = text_weight) # output mid-layer res
 # dropout layer
 dropout_text = Dropout(0.25, name = 'ph1_drop1')(text_feature_vector)
 dense_text_1 = Dense(128, activation = 'relu', name = 'ph1_dense')(dropout_text)
@@ -149,10 +149,10 @@ def train():
         cirno.write_epoch_acc(i, acc)  # record in analyze file
         if acc > acc_max:
             acc_max = acc
-            text_model.save_weights(saving_path + '/entire_text_output_weights.h5')
+            text_model.save_weights(saving_path + 'entire_text_output_weights.h5')
         if loss < loss_min:
             loss_min = loss
-            text_model.save_weights(saving_path + '/text_on_loss_output_weights.h5')
+            text_model.save_weights(saving_path + 'text_on_loss_output_weights.h5')
             print('>Lower loss saved')
     # inter_text.save_weights(saving_path+'inter_text_output_weights.h5')
     # load final(best) weights
@@ -171,7 +171,7 @@ def generate_confusion_matrix():
     predictions = text_model.predict(test_text)
     confusion = confusion_matrix(np.argmax(test_label, axis=1), np.argmax(predictions, axis=1))
     print(confusion)
-    np.savetxt(work_path + "/analyze/confusion_matrix.csv", confusion, fmt='%.0f', delimiter=",")
+    np.savetxt(work_path + "analyze/confusion_matrix.csv", confusion, fmt='%.0f', delimiter=",")
 
     index_to_label = {}
     for label, raw_index in cirno.tester_lbl_dic.items():
@@ -180,10 +180,39 @@ def generate_confusion_matrix():
             index_to_label[index] = label
     print(index_to_label)
 
+def analyze_gcs_label():
+    import json
+    def str_makeup(st, length):
+        st = str(st)
+        st += " " * length
+        return st[:length]
+    text_model.load_weights(saving_path + 'text_on_loss_output_weights.h5')
+    lbl, txt, _l, _r, raw_lbl, raw_txt = cirno.get_data_for_analyze(label="GCS Calculation")
+    #text_model.fit(txt, lbl, batch_size=batch_size, epochs=1, verbose=1)
+    mock_model = Model(input=text_model.input, output=text_model.get_layer('ph1_lam1').output)
+    # mock_model_output = mock_model.predict(txt[0][np.newaxis, :])
+
+    f = open(saving_path + 'hospital_data/analyze/gcs_analyze.txt', 'w')
+    results = {}
+    for i in range(len(raw_lbl)):
+        results[str(i)] = []
+        results[str(i)].append({
+            'label': raw_lbl[i],
+            'sentence': str(raw_txt[i]),
+            'result': str(mock_model.predict(txt[i][np.newaxis, :]))
+        })
+        f.write(str_makeup(i, 5) + str(raw_txt[i]))
+        f.write('\n' + str(mock_model.predict(txt[i][np.newaxis, :])))
+        f.write('\n\n')
+    f.close()
+
+    with open(saving_path + 'hospital_data/analyze/gcs_analyze.json', 'w') as json_out:
+        json.dump(results, json_out)
+
 
 
 
 
 
 if __name__ == "__main__":
-    train()
+    analyze_gcs_label()
